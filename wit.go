@@ -82,7 +82,7 @@ func SendWitVoice(fileRef string) string {
 	return string(body)
 }
 func SendWitBuff(buffer *bytes.Buffer) string {
-	url := "https://api.wit.ai/speech?v=20141022"
+	url := "https://api.wit.ai/speech?v=20160526"
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", url, buffer)
 
