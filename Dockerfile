@@ -1,3 +1,3 @@
 FROM scratch
-COPY ./app /app
-ENTRYPOINT ["./app"]
+COPY app /app
+ENTRYPOINT ["/app"]
