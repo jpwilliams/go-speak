@@ -27,7 +27,7 @@ func start() {
 		"-t", "wav",
 		"-",
 		"rate", "24k",
-		"silence", "1", "0.05", "1.5%", "1", "1.5", "2%"}
+		"silence", "1", "0.05", "1.5%", "2", "1.0", "2%"}
 
 	var byteArr []byte
 	buf := bytes.NewBuffer(byteArr)
