@@ -22,40 +22,33 @@ func ContinuousRecognition() {
 }
 
 func start() {
-	/*
-		cwd, err := os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-		}
-	*/
-	//cmd := "sox"
 	cmd2 := "rec"
 	arg2 := []string{
-		//rec test.wav rate 32k silence 1 0.1 3% 1 3.0 3%
-		"-t", "wav", "-",
-		"rate", "32k",
-		/*"rate", "16000", "channels", "1",*/
-		"silence", "1", "0.1", "2%", "1", "3.0", "0.25%"}
-	/*"silence", "1", "0.1", "0.1%", "1", "1.0", "0.1%"}*/
-	/*args := []string{
-	"-q",
-	"-b", "16",
-	"-d", "-t", "flac", "-",
-	"rate", "16000", "channels", "1",
-	//"silence", "1", "0.1", (ops.threshold || "0.1") + '%', "1", "1.0", (ops.threshold || "0.1") + '%'}
-	"silence", "1", "0.1", "0.1" + "%", "1", "1.0", "0.1" + "%"}
-	*/
+		"-t", "wav",
+		"-",
+		"rate", "24k",
+		"silence", "1", "0.05", "1.5%", "1", "1.5", "2%"}
+
 	var byteArr []byte
 	buf := bytes.NewBuffer(byteArr)
+	fmt.Println("Executing recording...")
 	cmdExec := exec.Command(cmd2, arg2...)
+	fmt.Println("set up command")
 	stdout, err := cmdExec.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("set up stoutpipe")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("started")
 	err = cmdExec.Start()
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("reading from buf")
 	buf.ReadFrom(stdout)
+	fmt.Println("Sending...")
 	fmt.Println(SendWitBuff(buf))
 }

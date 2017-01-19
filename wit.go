@@ -2,6 +2,7 @@ package speech
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -71,10 +72,12 @@ func SendWitVoice(fileRef string) string {
 	}
 	req.Header.Set("Authorization", "Bearer "+witKey)
 	req.Header.Set("Content-Type", "audio/wav")
+	fmt.Println("sending req")
 	res, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("reading req")
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
