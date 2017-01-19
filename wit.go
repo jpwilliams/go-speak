@@ -2,7 +2,6 @@ package speech
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,54 +10,52 @@ import (
 
 var witKey string
 
-/** SetWitKey
-*   witKey must be set prior to executing any wit commands
-**/
+// SetWitKey witKey must be set prior to executing any wit commands
 func SetWitKey(key string) string {
 	witKey = key
 	return witKey
 }
 
-/** PrintWitKey
-*   Returns the current wit key if set, otherwise returns nil
-**/
+// PrintWitKey Returns the current wit key if set, otherwise returns nil
 func PrintWitKey() string {
 	return witKey
 }
 
-/** convert
-* converts a message with spaces into one suitable to passing to wit
-**/
-
+// convert converts a message with spaces into one suitable to passing to wit
 func convert(message string) string {
 	arrString := strings.Split(message, " ")
+
 	var ret string
+
 	for x := 0; x < len(arrString); x++ {
 		ret += arrString[x] + "%20"
 	}
+
 	return ret
 }
 
+// SendWitMessage sends a message to the Wit AI bot
 func SendWitMessage(message string) string {
 	url := "https://api.wit.ai/message?v=20160225&q=" + convert(message)
+
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("Authorization", "Bearer "+witKey)
+
 	client := &http.Client{}
 	resp, _ := client.Do(req)
 	contents, _ := ioutil.ReadAll(resp.Body)
+
 	return string(contents)
 }
 
-/**
-*Sends an audio file to wit.ai, wit key must have been set prior to calling
-*@param filename the full path to the file that is to be sent
-*@return a string with the json data received
-**/
+// SendWitVoice Sends an audio file to wit.ai, wit key must have been set prior
+// to calling @param filename the full path to the file that is to be sent @return
+// a string with the json data received
 func SendWitVoice(fileRef string) string {
 	audio, err := ioutil.ReadFile(fileRef)
+
 	if err != nil {
 		log.Fatal("Error reading file:\n%v\n", err)
-
 	}
 
 	reader := bytes.NewReader(audio)
@@ -70,20 +67,28 @@ func SendWitVoice(fileRef string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	req.Header.Set("Authorization", "Bearer "+witKey)
 	req.Header.Set("Content-Type", "audio/wav")
-	fmt.Println("sending req")
+
 	res, err := client.Do(req)
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("reading req")
+
 	body, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	return string(body)
 }
+
+// SendWitBuf Sends the raw data of a buffer to the Wit AI bot. This is used for
+// continuous streaming, though ideally we should instead be streaming the audio
+// directly to Wit.
 func SendWitBuff(buffer *bytes.Buffer) string {
 	url := "https://api.wit.ai/speech?v=20160526"
 	client := &http.Client{}
@@ -95,12 +100,16 @@ func SendWitBuff(buffer *bytes.Buffer) string {
 	req.Header.Set("Authorization", "Bearer "+witKey)
 	req.Header.Set("Content-Type", "audio/wav")
 	res, err := client.Do(req)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	body, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	return string(body)
 }
